@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">HelloWorld</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="text_box_hint">Enter text here</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_display_message">Hello, World</string>
+    <string name="button_another_send">Another Send!</string>
+    <string name="title_another">Another activity</string>
+
+</resources>
