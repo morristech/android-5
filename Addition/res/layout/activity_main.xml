@@ -1,46 +1,36 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-    
-    <LinearLayout 
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-        <!-- Why does this only work when width is fill and height is wrap? -->
-        
-        <EditText 
-            android:id="@+id/int_a"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/text_hint_a" />
-        
-        <Button 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_a"
-            android:onClick="increment" />
-    </LinearLayout>
-    
-    <LinearLayout 
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        
-        <EditText
-            android:id="@+id/int_b"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/text_hint_b" />
-        
-        <Button 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_b"
-            android:onClick="add" />
-    </LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
+    <EditText
+        android:id="@+id/input_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/input_a"
+        android:inputType="number" >
+        <requestFocus/>
+    </EditText>
+
+    <EditText
+        android:id="@+id/input_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/input_b"
+        android:inputType="number" />
+    
+    <Button 
+        android:id="@+id/button_increment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_increment" />
+    
+    <Button 
+        android:id="@+id/button_addition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_addition" />
+    
 </LinearLayout>

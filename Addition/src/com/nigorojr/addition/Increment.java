@@ -1,4 +1,5 @@
-package com.example.addition;
+package com.nigorojr.addition;
+
 
 import android.os.Bundle;
 import android.app.Activity;

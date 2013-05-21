@@ -1,5 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">Addition</string>
+    <string name="action_settings">Settings</string>
+    <string name="input_a">Input first number</string>
+    <string name="input_b">Input second number</string>
+    <string name="button_increment">Increment number in the upper text box</string>
+    <string name="button_addition">Add the 2 numbers</string>
 
 </resources>

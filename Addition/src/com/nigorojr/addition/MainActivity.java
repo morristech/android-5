@@ -1,4 +1,5 @@
-package com.example.addition;
+package com.nigorojr.addition;
+
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -8,22 +9,23 @@ import android.content.SharedPreferences.Editor;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+// TODO: Implement View.OnClickListener
 public class MainActivity extends Activity {
     
-    public static final String NUMBER = "com.example.addition.NUMBER";
+    public static final String NUMBER = "com.nigorojr.addition.NUMBER";
     
     public void increment(View view) {
         Intent intent = new Intent(this, Increment.class);
-		EditText editText = (EditText)findViewById(R.id.int_a);
+		EditText editText = (EditText)findViewById(R.id.input_a);
 		int a = Integer.parseInt(editText.getText().toString());
 		a++;
 		intent.putExtra(NUMBER, a);
 		
-		//SharedPreferences sp = getSharedPreferences("numbers", MODE_PRIVATE);
-		//Editor e = sp.edit();
-		//e.putInt("num1", a);
-		//e.commit();
+		// For now, just show a Toast
+		Toast.makeText(this, "Incremented result is " + a, Toast.LENGTH_SHORT);
+		
 		startActivity(intent);
     }
     
