@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DogAge</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">Dog Age Calculator</string>
+    <string name="label_description">Will convert to dog age.</string>
+    <string name="label_year">Age</string>
+    <string name="button_calculate">Calculate</string>
+
+</resources>

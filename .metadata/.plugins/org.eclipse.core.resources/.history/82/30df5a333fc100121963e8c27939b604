@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Addition and Increment</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_a">Increment</string>
+    <string name="button_b">Add</string>
+    <string name="text_hint_a">First Integer</string>
+    <string name="text_hint_b">Second Integer (Optional)</string>
+    <string name="title_activity_increment">Increment</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_addition">Addition</string>
+
+</resources>
