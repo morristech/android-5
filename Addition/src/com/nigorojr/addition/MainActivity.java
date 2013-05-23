@@ -4,7 +4,6 @@ package com.nigorojr.addition;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,15 +51,17 @@ public class MainActivity extends Activity {
     
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	Log.i("debug", "req code: " + requestCode);
-    	Log.i("debug", "res code: " + resultCode);
     	TextView tv = (TextView)findViewById(R.id.result_textView);
-    	//if (requestCode == REQUEST_ANOTHER_ACTIVITY) {
-    		if (resultCode == RESULT_OK)
-	    		tv.setText(data.getStringExtra("ANOTHER_NUMBER"));
+    	if (requestCode == REQUEST_ANOTHER_ACTIVITY) {
+    		if (resultCode == RESULT_OK) {
+    			// Either works
+    			// int a = data.getIntExtra("ANOTHER_NUMBER", -1);
+	    		// tv.setText(String.valueOf(a));
+	    		tv.setText("100 + upper number + number from the other Activity\n= " + (data.getIntExtra("ANOTHER_NUMBER", -1)));
+    		}
     		else
     			Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_SHORT).show();
-    	//}
+    	}
     }
     
     class ButtonClick implements OnClickListener {
@@ -102,7 +103,6 @@ public class MainActivity extends Activity {
             else if (v.getId() == R.id.button_for_result) {
             	Intent intent = new Intent(MainActivity.this, SecondActivity.class);
             	intent.putExtra("FOR_RESULT", String.valueOf(num_a));
-            	Log.i("start", "preparing to start activity for result");
             	startActivityForResult(intent, REQUEST_ANOTHER_ACTIVITY);
             }
         }

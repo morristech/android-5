@@ -3,7 +3,6 @@ package com.nigorojr.addition;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,7 +26,7 @@ public class SecondActivity extends Activity implements OnClickListener {
 		if (passed != null) {
 			// Show what has been passed from the previous activity
 			TextView tv = (TextView)findViewById(R.id.text_addition);
-			tv.setText(passed);
+			tv.setText("Result of Addition: " + passed);
 		}
 		else
 			// Probably best if there is a check to see if the getStringExtra returned a non-null String
