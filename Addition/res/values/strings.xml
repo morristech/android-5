@@ -7,5 +7,11 @@
     <string name="input_b">Input second number</string>
     <string name="button_increment">Increment</string>
     <string name="button_addition">Add</string>
+    <string name="secondActivity">Second</string>
+    <string name="button_close">Close this Activity</string>
+    <string name="button_result">Return value to First Activity</string>
+    <string name="input_result_hint">Enter number</string>
+    <string name="button_for_result_explanation">Following button passes input value + 100 to another activity</string>
+    <string name="button_for_result">Pass for result</string>
 
 </resources>
