@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AnimalView</string>
+    <string name="giraffe">Giraffe</string>
+    <string name="hippo">Hippo</string>
+    <string name="lion">Activity: Lion</string>
+    <string name="title_activity_giraffe">Activity: Giraffe</string>
+    <string name="title_activity_lion">Activity: Lion</string>
+    <string name="title_activity_hippo">Activity: Hippo</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Implicit_Intent</string>
+    <string name="action_settings">Settings</string>
+    <string name="text_top">Header text</string>
+    <string name="button_1">Giraffe Button</string>
+    <string name="button_2">Lion Button</string>
+    <string name="button_3">Hippo Button</string>
+    <string name="button_4">All Button</string>
+
+</resources>
