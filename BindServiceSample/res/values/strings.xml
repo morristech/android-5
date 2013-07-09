@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">BindServiceSample</string>
-    <string name="action_settings">Settings</string>
-    <string name="button_bind">Bind to service</string>
-    <string name="button_msg_android">Send message \"Android\"</string>
-    <string name="button_msg_message">Send message \"Message\"</string>
-    <string name="button_unbind">Unbind from service</string>
-
+    <string name="app_name">BindService Sample</string>
+    <string name="button_bind">onBind</string>
+    <string name="button_msg_android">Message "Android"</string>
+    <string name="button_msg_message">Message "Message"</string>
+    <string name="button_unbind">unbind</string>
+    <string name="action_settings">Action Settings</string>
 </resources>
