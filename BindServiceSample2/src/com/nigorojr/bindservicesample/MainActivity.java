@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            serviceGoingOn = false;
+            // serviceGoingOn = false;
         }
     };
 
@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
     private void unbind() {
         if (serviceGoingOn)
             unbindService(sc);
+        serviceGoingOn = false;
     }
 
     private void sendMessage(String text) {
