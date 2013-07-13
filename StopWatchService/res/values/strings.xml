@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">StopWatchService</string>
+    <string name="action_settings">Settings</string>
+    <string name="default_time">0</string>
+    <string name="btn_bind">Bind</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Stop</string>
+    <string name="btn_pause">Pause</string>
+    <string name="btn_show">Show</string>
+    <string name="btn_unbind">Unbind</string>
+
+</resources>
