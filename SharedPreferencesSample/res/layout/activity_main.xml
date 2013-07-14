@@ -1,0 +1,61 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1"
+    android:shrinkColumns="1" >
+
+    <TableRow>
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Title" />
+	    <EditText
+	        android:id="@+id/title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:inputType="text"
+	        android:hint="Input title" />
+    </TableRow>
+    
+    <TableRow>
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Mute?" />
+        <CheckBox
+            android:id="@+id/checkbox"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Color" />
+        <Spinner
+            android:id="@+id/spinner"
+            android:entries="@array/color_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </TableRow>
+    
+    <Button
+        android:id="@+id/btn_get"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Get" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/btn_remove"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove" />
+</TableLayout>
