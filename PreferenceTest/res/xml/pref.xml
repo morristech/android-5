@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="Everything">
+	    <EditTextPreference android:title="EditTextPreference"
+	        android:dialogTitle="Enter something!!"
+	        android:key="et"
+	        android:summary="Testing EditTextPreference" />
+	    <CheckBoxPreference android:title="CheckBoxPreference"
+	        android:summary="Testing CheckBoxPreference"
+	        android:key="cb" />
+	    <CheckBoxPreference android:title="Depends on ^^^^^^"
+	        android:summary="This checkbox depends on it's parent"
+	        android:key="cbChild"
+	        android:dependency="cb"
+	        android:layout="?android:attr/preferenceLayoutChild" />
+	    <CheckBoxPreference android:title="Depends on ^^^^^^"
+	        android:summary="GrandChild"
+	        android:key="cbGrandChild"
+	        android:dependency="cbChild"
+	        android:layout="?android:attr/preferenceLayoutChild" />
+	    <ListPreference android:title="List (Spinner)"
+	        android:summary="ListPreference"
+	        android:key="list"
+	        android:entries="@array/list"
+	        android:entryValues="@array/list_vals" />
+    </PreferenceCategory>
+</PreferenceScreen>

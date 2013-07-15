@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory android:title="First preference category">
+        <EditTextPreference
+            android:dialogTitle="dialogTitle"
+            android:key="Title"
+            android:summary="This is the summary"
+            android:title="title" />
+        <CheckBoxPreference
+            android:key="Mute"
+            android:summary="This is the summary for mute"
+            android:title="sound effect" />
+        <ListPreference
+            android:title="list title!"
+            android:key="Color"
+            android:summary="Summary for list"
+            android:entries="@array/color_list"
+            android:entryValues="@array/color_list_values" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Title for second preference category">
+        <CheckBoxPreference
+            android:title="parent checkbox"
+            android:key="Parent"
+            android:summary="summary for parent" />
+        <CheckBoxPreference
+            android:dependency="Parent"
+            android:title="child checkbox"
+            android:key="Child"
+            android:summary="summary for child"
+            android:layout="?android:attr/preferenceLayoutChild" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

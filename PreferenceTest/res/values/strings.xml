@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PreferenceTest</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="list">
+        <item>Element 1</item>
+        <item>Element 2</item>
+        <item>Element 3</item>
+        <item>Element 4</item>
+        <item>Element 5</item>
+    </string-array>
+    <string-array name="list_vals">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+</resources>
