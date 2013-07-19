@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FileInputOutputSample</string>
+    <string name="action_settings">Settings</string>
+    <string name="hint">Enter whatever you want to save</string>
+    <string name="button">Save</string>
+
+    <string-array name="list_button">
+        <item>Save</item>
+        <item>Load</item>
+    </string-array>
+    <string-array name="list_button_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+</resources>

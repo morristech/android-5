@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="Change button's behavior">
+        <ListPreference android:title="Button is"
+            android:summary="Set how the button works"
+            android:key="button_works_as"
+            android:entries="@array/list_button"
+            android:entryValues="@array/list_button_values" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
