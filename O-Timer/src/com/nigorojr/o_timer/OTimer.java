@@ -9,12 +9,12 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.content.Intent;
 import android.os.Handler;
-import android.widget.Toast;
 
 public class OTimer extends Service {
     private Calendar startDate;
     private Calendar goalDate;
     private long diff = -1;
+    private long initialSecondsToGoal;
     private boolean started = false;
     
     public OTimer() {
@@ -32,7 +32,7 @@ public class OTimer extends Service {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MainActivity.REQUEST_TIME:
-                    Message replyMessage = Message.obtain(null, MainActivity.REQUEST_TIME, getSecondsToGoal());
+                    Message replyMessage = Message.obtain(null, MainActivity.REQUEST_TIME);
                     try {
                         msg.replyTo.send(replyMessage);
                     }
@@ -50,6 +50,8 @@ public class OTimer extends Service {
     }
     
     public void start() {
+        if (started)
+            return;
         // Reset the variable "diff" for a new start
         diff = -1;
         
@@ -64,6 +66,8 @@ public class OTimer extends Service {
     public int[] stop() {
         int[] ret = getDiff();
         started = false;
+        // Reset the goalDate
+        goalDate = null;
         return ret;
     }
     
@@ -71,6 +75,10 @@ public class OTimer extends Service {
         if (!started)
             return -1;
         return startDate.getTimeInMillis();
+    }
+    
+    public long getInitialSecondsToGoal() {
+        return initialSecondsToGoal;
     }
     
     public long getSecondsToGoal() {
@@ -102,7 +110,25 @@ public class OTimer extends Service {
     }
     
     public void setStartingDate(int year, int month, int day) {
+        if (startDate == null)
+            start();
         startDate.set(year, month, day);
+    }
+    
+    public void setGoal(int days) {
+        if (goalDate == null)
+            goalDate = Calendar.getInstance();
+        initialSecondsToGoal = days * 60 * 60 * 24;
+        long plus = days * 1000 * 60 * 60 * 24;
+        // If the timer is already counting
+        if (startDate == null)
+            start();
+        goalDate.setTimeInMillis(startDate.getTimeInMillis() + plus);
+        
+        // Assume that the user wanted to enter how many days from RIGHT NOW,
+        // instead of how many days from the START
+        if (goalDate.before(Calendar.getInstance()))
+            goalDate.setTimeInMillis((Calendar.getInstance().getTimeInMillis() + plus));
     }
 
     public boolean isStarted() {

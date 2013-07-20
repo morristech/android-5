@@ -10,23 +10,37 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
+import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.TextView;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+/**
+ * Timer.
+ * @author Naoki Mizuno
+ * TODO: Add JavaDoc.
+ * TODO: Refactor to lessen code amount.
+ *
+ */
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     
@@ -45,6 +59,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     };
     
+    // TODO: Do we really need to get the value back when we can get it by getSecondsToGoal()?
     private Messenger receive = new Messenger(new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -58,13 +73,22 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 tv.setText(String.valueOf(value[i]));
             }
             
-            long timeToGoal = (Long)msg.obj;
-            if (timeToGoal == -1)
-                return;
-            if (timeToGoal == 0)
+            long timeToGoal = timer.getSecondsToGoal();
+            ProgressBar pb = (ProgressBar)findViewById(R.id.progress);
+            pb.setMax((int)timer.getInitialSecondsToGoal());
+            pb.setProgress((int)(timer.getInitialSecondsToGoal() - timer.getSecondsToGoal()));
+            if (timeToGoal == -1) {
+                findViewById(R.id.goal_left_row).setVisibility(View.GONE);
+                // TODO: Progress until next rank when no goal is set
+                pb.setProgress(0);
+            }
+            else if (timeToGoal == 0)
                 System.out.println("CONGRATULATIONS!!!!");
-            else
-                System.out.println("Time left: " + timeToGoal + " seconds");
+            else {
+                findViewById(R.id.goal_left_row).setVisibility(View.VISIBLE);
+                TextView tv = (TextView)findViewById(R.id.goal_left);
+                tv.setText(String.valueOf(timeToGoal));
+            }
         }
     });
 
@@ -101,9 +125,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         t.scheduleAtFixedRate(task, 1, 1000);
 
         // Bind to service
-        this.bindService(new Intent(this, OTimer.class), sc, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, OTimer.class), sc, Context.BIND_AUTO_CREATE);
 
-        // Add menus
     }
 
     @Override
@@ -118,6 +141,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         switch (item.getItemId()) {
             case R.id.action_set_start_date:
                 setStartDate();
+                break;
+            case R.id.action_set_goal:
+                setGoal();
+                startTimer();
                 break;
         }
         return true;
@@ -153,7 +180,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         
         // Save the start day only if the timer is started
         if (timer.isStarted())
-            saveStartDate();
+            saveStartDateAndGoal();
     }
     
     public void init() {
@@ -164,6 +191,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             timer = new OTimer();
         else
             timer = new OTimer(startDate);
+
+        long goalDate = sp.getLong("goalDate", -1);
+        if (goalDate != -1)
+            timer.setGoal((int)goalDate / (60 * 60 * 24));
+        else
+            findViewById(R.id.goal_left_row).setVisibility(View.GONE);
     }
     
     public void startTimer() {
@@ -175,6 +208,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
         editor.putLong("startDate", -1);
+        editor.putLong("goalDate", -1);
         editor.commit();
         
         int[] duration = timer.stop();
@@ -189,11 +223,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         dp.show(fm, "tag");
     }
     
-    public void saveStartDate() {
+    public void setGoal() {
+        FragmentManager fm = getSupportFragmentManager();
+        SetGoalDialog sgd = new SetGoalDialog();
+        sgd.show(fm, "tag");
+    }
+    
+    public void saveStartDateAndGoal() {
         // Add to SharedPreferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
         editor.putLong("startDate", timer.getStartDateInMilliSec());
+        editor.putLong("goalDate", timer.getInitialSecondsToGoal());
         editor.commit();
     }
     
@@ -201,10 +242,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             implements DatePickerDialog.OnDateSetListener {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new DatePickerDialog(getActivity(), this,
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(), this,
                     Calendar.getInstance().get(Calendar.YEAR),
                     Calendar.getInstance().get(Calendar.MONTH),
                     Calendar.getInstance().get(Calendar.DATE));
+            dpd.setTitle(this.getResources().getString(R.string.dialog_title));
+            return dpd;
         }
 
         @Override
@@ -216,6 +259,36 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 return;
             }
             timer.setStartingDate(year, monthOfYear, dayOfMonth);
+        }
+    }
+    
+    public static class SetGoalDialog extends DialogFragment implements DialogInterface.OnClickListener {
+        EditText goalEditText;
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case AlertDialog.BUTTON_POSITIVE:
+                    if (goalEditText.getText().toString().equals(""))
+                        return;
+                    timer.setGoal(Integer.parseInt(goalEditText.getText().toString()));
+                    break;
+            }
+        }
+        
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog dialog = null;
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setPositiveButton(getResources().getString(R.string.goal_dialog_ok), this);
+            builder.setNegativeButton(getResources().getString(R.string.goal_dialog_cancel), this);
+            goalEditText = new EditText(getActivity());
+            goalEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            goalEditText.setHint(getResources().getString(R.string.goal_dialog_hint));
+            builder.setView(goalEditText);
+            
+            dialog = builder.create();
+            dialog.setTitle(getResources().getString(R.string.goal_dialog_title));
+            return dialog;
         }
     }
 }
