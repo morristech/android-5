@@ -3,11 +3,13 @@
 
     <string name="app_name">オナ禁タイマー</string>
     <string name="action_settings">設定</string>
+    <string name="action_set_start_date">日付を指定して開始</string>
     <string name="unit_days">日</string>
     <string name="unit_hours">時間</string>
     <string name="unit_minutes">分</string>
     <string name="unit_seconds">秒</string>
     <string name="button_start_stop">Start / Stop</string>
     <string name="button_new">新規に開始</string>
-
+    
+    <string name="set_to_future">未来から来たんですか！？</string>
 </resources>

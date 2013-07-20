@@ -1,8 +1,6 @@
 package com.nigorojr.o_timer;
 
 import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Service;
 import android.os.IBinder;
@@ -11,12 +9,23 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.content.Intent;
 import android.os.Handler;
+import android.widget.Toast;
 
 public class OTimer extends Service {
     private Calendar startDate;
     private Calendar goalDate;
     private long diff = -1;
     private boolean started = false;
+    
+    public OTimer() {
+    }
+    
+    // If the program last exited while timer was working
+    public OTimer(long startDate) {
+        this.startDate = Calendar.getInstance();
+        this.startDate.setTimeInMillis(startDate);
+        started = true;
+    }
     
     private Messenger messenger = new Messenger(new Handler() {
         @Override
@@ -58,6 +67,12 @@ public class OTimer extends Service {
         return ret;
     }
     
+    public long getStartDateInMilliSec() {
+        if (!started)
+            return -1;
+        return startDate.getTimeInMillis();
+    }
+    
     public long getSecondsToGoal() {
         Calendar current = Calendar.getInstance();
         if (goalDate == null)
@@ -81,15 +96,16 @@ public class OTimer extends Service {
         long minutes = diff / 60;
         diff = diff % 60;
         long seconds = diff;
-        
-        System.out.printf("%d %d %d %d", days, hours, minutes, seconds);
-        
+
         int[] ret = {(int)days, (int)hours, (int)minutes, (int)seconds};
         return ret;
     }
     
+    public void setStartingDate(int year, int month, int day) {
+        startDate.set(year, month, day);
+    }
+
     public boolean isStarted() {
         return started;
     }
-    
 }

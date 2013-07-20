@@ -3,6 +3,7 @@
 
     <string name="app_name">O-Timer</string>
     <string name="action_settings">Settings</string>
+    <string name="action_set_start_date">I meant to tap start on…</string>
     <string name="days">0</string>
     <string name="unit_days">" days"</string>
     <string name="hours">0</string>
@@ -13,5 +14,7 @@
     <string name="unit_seconds">" seconds"</string>
     <string name="button_start_stop">Start / Stop</string>
     <string name="button_new">Start new</string>
+    
+    <string name="set_to_future">Are you from the future?</string>
 
 </resources>
