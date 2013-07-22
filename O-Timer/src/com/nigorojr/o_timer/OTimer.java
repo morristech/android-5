@@ -14,7 +14,9 @@ public class OTimer extends Service {
     private Calendar startDate;
     private Calendar goalDate;
     private long diff = -1;
-    private long initialSecondsToGoal;
+    // The following has to be -1 because this is what will be returned in
+    // getInitialSecondsToGoal() when no goalDate is set.
+    private long initialSecondsToGoal = -1;
     private boolean started = false;
     
     public OTimer() {
@@ -82,9 +84,9 @@ public class OTimer extends Service {
     }
     
     public long getSecondsToGoal() {
-        Calendar current = Calendar.getInstance();
         if (goalDate == null)
             return -1;
+        Calendar current = Calendar.getInstance();
         long seconds = (goalDate.getTimeInMillis() - current.getTimeInMillis()) / 1000;
         
         return seconds;

@@ -13,7 +13,7 @@
     
     <string name="goal_left_1">目標まで、あと</string>
     <string name="goal_left">0</string>
-    <string name="goal_left_2">秒</string>
+    <string name="goal_left_2">分</string>
 
     <string name="button_start_stop">Start / Stop</string>
     <string name="button_new">我慢できませんでしたorz</string>
@@ -26,4 +26,11 @@
     <string name="goal_dialog_ok">設定</string>
     <string name="goal_dialog_cancel">キャンセル</string>
 
+    <string name="congratulate_title">目標達成!!</string>
+    <string name="congratulate">おめでとうございます!!この調子で続けてください!!!</string>
+
+    <string name="timer_stopped_title">タイマーを停止しました</string>
+
+    <string name="reset_title">なんだって!?</string>
+    <string name="reset_message">次こそはできるはず!!俺はあんたを信じてるぜ!!!</string>
 </resources>

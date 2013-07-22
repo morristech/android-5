@@ -1,6 +1,7 @@
 package com.nigorojr.o_timer;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,17 +14,21 @@ import android.os.RemoteException;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.AlertDialog.Builder;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableRow;
 import android.widget.Toast;
 import android.widget.TextView;
 import android.content.ComponentName;
@@ -39,14 +44,17 @@ import android.preference.PreferenceManager;
  * @author Naoki Mizuno
  * TODO: Add JavaDoc.
  * TODO: Refactor to lessen code amount.
+ * TODO: Do we really need to use Messenger?
  *
  */
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     
     public static final int REQUEST_TIME = 0;
-    
+    public static final String TIMER_STOPPED = "timerStopped";
+    public static final String ALERT_KEY = "titleForAlertUser";
     private static OTimer timer;
+    private Timer t;
     
     private Messenger messenger = null;
     private ServiceConnection sc = new ServiceConnection() {
@@ -73,21 +81,27 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 tv.setText(String.valueOf(value[i]));
             }
             
+            Log.i("debug", timer.getSecondsToGoal() + "");
             long timeToGoal = timer.getSecondsToGoal();
             ProgressBar pb = (ProgressBar)findViewById(R.id.progress);
-            pb.setMax((int)timer.getInitialSecondsToGoal());
-            pb.setProgress((int)(timer.getInitialSecondsToGoal() - timer.getSecondsToGoal()));
-            if (timeToGoal == -1) {
+            if (timeToGoal <= -1) {
                 findViewById(R.id.goal_left_row).setVisibility(View.GONE);
                 // TODO: Progress until next rank when no goal is set
                 pb.setProgress(0);
+                return;
             }
-            else if (timeToGoal == 0)
-                System.out.println("CONGRATULATIONS!!!!");
+            pb.setMax((int)timer.getInitialSecondsToGoal());
+            pb.setProgress((int)(timer.getInitialSecondsToGoal() - timeToGoal));
+
+            if (timeToGoal == 0)
+                showAlertDialog(getResources().getString(R.string.congratulate_title),
+                        getResources().getString(R.string.congratulate));
+                //Toast.makeText(getApplicationContext(),
+                        //getResources().getString(R.string.congratulate), Toast.LENGTH_LONG).show();
             else {
                 findViewById(R.id.goal_left_row).setVisibility(View.VISIBLE);
                 TextView tv = (TextView)findViewById(R.id.goal_left);
-                tv.setText(String.valueOf(timeToGoal));
+                tv.setText(String.valueOf(timeToGoal / 60));
             }
         }
     });
@@ -103,7 +117,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         findViewById(R.id.button_start_stop).setOnClickListener(this);
         findViewById(R.id.button_new).setOnClickListener(this);
 
-        Timer t = new Timer();
+        t = new Timer();
         // Send request for time every second
         TimerTask task = new TimerTask() {
             @Override
@@ -122,11 +136,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
             }
         };
-        t.scheduleAtFixedRate(task, 1, 1000);
+        t.scheduleAtFixedRate(task, 0, 1000);
 
         // Bind to service
         bindService(new Intent(this, OTimer.class), sc, Context.BIND_AUTO_CREATE);
-
     }
 
     @Override
@@ -163,8 +176,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     startTimer();
                 break;
             case R.id.button_new:
-                if (timer.isStarted())
-                    stopTimer();
+                if (timer.isStarted()) {
+                    timer.stop();
+                }
+                resetStartDateAndGoal();
+                // Show dialog
+                showAlertDialog(getResources().getString(R.string.reset_title),
+                        getResources().getString(R.string.reset_message));
                 startTimer();
                 break;
         }
@@ -174,9 +192,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     /**
      * Unbind from service when Activity is destroyed
      */
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         unbindService(sc);
+        t.cancel();
         
         // Save the start day only if the timer is started
         if (timer.isStarted())
@@ -204,17 +223,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
     
     public void stopTimer() {
-        // Reset the start date to default
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putLong("startDate", -1);
-        editor.putLong("goalDate", -1);
-        editor.commit();
+        resetStartDateAndGoal();
         
         int[] duration = timer.stop();
-        String str = duration[0] + " days " + duration[1] + " hours " + duration[2]
-                + " minutes " + duration[3] + " seconds!!!!";
-        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+        // Show a dialog
+        AlertUser dialog = new AlertUser();
+        Bundle bundle = new Bundle();
+        bundle.putIntArray(TIMER_STOPPED, duration);
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), "tag");
     }
     
     public void setStartDate() {
@@ -229,6 +246,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         sgd.show(fm, "tag");
     }
     
+    public void showAlertDialog(String title, String message) {
+        AlertUser au = new AlertUser();
+        Bundle bundle = new Bundle();
+        String[] titleAndMessage = {title, message};
+        bundle.putStringArray(ALERT_KEY, titleAndMessage);
+        au.setArguments(bundle);
+        au.show(getSupportFragmentManager(), "tag");
+    }
+    
     public void saveStartDateAndGoal() {
         // Add to SharedPreferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -238,6 +264,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         editor.commit();
     }
     
+    public void resetStartDateAndGoal() {
+        // Reset the start date to default
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putLong("startDate", -1);
+        editor.putLong("goalDate", -1);
+        editor.commit();
+    }
+
     public static class DatePickingDialog extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
         @Override
@@ -281,14 +316,68 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setPositiveButton(getResources().getString(R.string.goal_dialog_ok), this);
             builder.setNegativeButton(getResources().getString(R.string.goal_dialog_cancel), this);
+            // Input dialog
             goalEditText = new EditText(getActivity());
             goalEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             goalEditText.setHint(getResources().getString(R.string.goal_dialog_hint));
-            builder.setView(goalEditText);
+            // Set 1 day as default
+            goalEditText.setText("1");
+            // Set cursor to the very end
+            goalEditText.setSelection(goalEditText.getText().toString().length());
+            // Unit
+            TextView tv = new TextView(getActivity());
+            tv.setText(getResources().getString(R.string.unit_days));
+
+            // Put those together
+            LinearLayout layout = new LinearLayout(getActivity());
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            layout.setGravity(Gravity.CENTER_HORIZONTAL);
+            layout.addView(goalEditText);
+            layout.addView(tv);
+            builder.setView(layout);
             
             dialog = builder.create();
             dialog.setTitle(getResources().getString(R.string.goal_dialog_title));
             return dialog;
+        }
+    }
+    
+    public static class AlertUser extends DialogFragment implements DialogInterface.OnClickListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            Bundle bundle = getArguments();
+            int[] timePassed = null;
+            String[] titleAndMessage = null;
+            if (bundle != null) {
+                timePassed = bundle.getIntArray(TIMER_STOPPED);
+                titleAndMessage = bundle.getStringArray(ALERT_KEY);
+            }
+
+            AlertDialog dialog = null;
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setPositiveButton("OK", this);
+            // Change the message depending on the argument
+            if (titleAndMessage != null) {
+                builder.setTitle(titleAndMessage[0]);
+                builder.setMessage(titleAndMessage[1]);
+            }
+            else if (timePassed != null){
+                builder.setTitle(getResources().getString(R.string.timer_stopped_title));
+                String unit_days = getResources().getString(R.string.unit_days);
+                String unit_hours = getResources().getString(R.string.unit_hours);
+                String unit_minutes = getResources().getString(R.string.unit_minutes);
+                String unit_seconds = getResources().getString(R.string.unit_seconds);
+                String str = String.format("%d%s%d%s%d%s%d%s", timePassed[0], unit_days,
+                        timePassed[1], unit_hours, timePassed[2], unit_minutes, timePassed[3], unit_seconds);
+                builder.setMessage(str);
+            }
+            
+            dialog = builder.create();
+            return dialog;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
         }
     }
 }
